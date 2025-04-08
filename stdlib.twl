@@ -1,0 +1,8 @@
+def append(list, val) {
+    name = __filename();
+    varname = __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append('''" + val + "''')");
+}
+
+def print(text) {
+    __python("print('''" + text + "''')");
+}

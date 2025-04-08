@@ -1,0 +1,1 @@
+antlr4-parse Grammar.g4 prog -gui main.twl

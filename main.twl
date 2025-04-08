@@ -1,0 +1,3 @@
+list = [55, 24, 23];
+append("list", "value");
+print(list[3]);

@@ -1,0 +1,25 @@
+{
+  "name": "twel",
+  "displayName": "twel",
+  "description": "Syntax highlighting for the twel language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "twel",
+      "aliases": ["Twel", "twel"],
+      "extensions": [".twl",".twel"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "twel",
+      "scopeName": "source.twel",
+      "path": "./syntaxes/twel.tmLanguage.json"
+    }]
+  }
+}
