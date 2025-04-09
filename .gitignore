@@ -1,4 +1,5 @@
 *.sh
+*.bat
 main.twl
 test.twl
 installer/

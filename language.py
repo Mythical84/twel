@@ -17,7 +17,7 @@ def parse_file(path, filename):
 
     parser.buildParseTrees = True
     tree = parser.prog()
-    Visitor.Visitor(os.path.splitext(os.path.basename(filename))[0], str(path) + '/' + os.path.dirname(filename)).visit(tree)
+    Visitor.Visitor(os.path.splitext(filename)[0], str(path)).visit(tree)
 
 stdlib_files = [
     'stdlib.twl',
