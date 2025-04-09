@@ -1,1 +1,0 @@
-cp -r syntax/twel C:/Users/tartinger2025/.vscode/extensions/
