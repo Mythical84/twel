@@ -14,13 +14,23 @@ class GrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by GrammarParser#statement.
-    def visitStatement(self, ctx:GrammarParser.StatementContext):
+    # Visit a parse tree produced by GrammarParser#normalStatement.
+    def visitNormalStatement(self, ctx:GrammarParser.NormalStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#fileStatement.
+    def visitFileStatement(self, ctx:GrammarParser.FileStatementContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by GrammarParser#bracket_statement.
     def visitBracket_statement(self, ctx:GrammarParser.Bracket_statementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#imp.
+    def visitImp(self, ctx:GrammarParser.ImpContext):
         return self.visitChildren(ctx)
 
 

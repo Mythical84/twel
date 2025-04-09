@@ -1,20 +1,35 @@
 from GrammarVisitor import GrammarVisitor
+import GrammarLexer
+from antlr4 import InputStream, CommonTokenStream
+import GrammarParser
 import ast
 import copy
 from memory import global_memory
 from memory import memory
 
 class Visitor(GrammarVisitor):
-    def __init__(self, filename):
+    def __init__(self, filename, path):
         self.filename = filename
+        self.path = path
         memory.register_file(filename)
+
+    def parse_file(self, path, filename):
+        with open(f'{str(path)}/{filename}.twl', 'r') as f:
+            text = '\n'.join(f.readlines())
+        chars = InputStream(text)
+        lexer = GrammarLexer.GrammarLexer(chars)
+        tokens = CommonTokenStream(lexer)
+        parser = GrammarParser.GrammarParser(tokens)
+
+        parser.buildParseTrees = True
+        tree = parser.prog()
+        Visitor(filename.split('.')[0], path).visit(tree)
 
     # From https://stackoverflow.com/questions/33409207/how-to-return-value-from-exec-in-function
     def convertExpr2Expression(self, Expr):
         Expr.lineno = 0
         Expr.col_offset = 0
         result = ast.Expression(Expr.value, lineno=0, col_offset = 0)
-
         return result
 
     def exec_with_return(self, code):
@@ -31,6 +46,19 @@ class Visitor(GrammarVisitor):
             return eval(compile(self.convertExpr2Expression(last_ast.body[0]), "<ast>", "eval"),globals())
         else:
             exec(compile(last_ast, "<ast>", "exec"),globals())
+    
+    # -------------Statement-------------- #
+    def visitFileStatement(self, ctx):
+        file='/'.join(ctx.getText().split('.')[:-1])
+        temp = copy.copy(self.filename)
+        self.filename = file
+        r = self.visitChildren(ctx)
+        self.filename = temp
+        return r
+
+    def visitImp(self, ctx):
+        file = ctx.getText()[6::].replace('.', '/')
+        self.parse_file(self.path, file)
 
     # -------------Data Types-------------- #
     def visitIntExpr(self, ctx):
@@ -49,7 +77,6 @@ class Visitor(GrammarVisitor):
         return None
 
     # -------------Math Operations-------------- #
-
     def visitOpExpr(self, ctx):
         left = self.visit(ctx.lhs)
         right = self.visit(ctx.rhs)
@@ -79,7 +106,6 @@ class Visitor(GrammarVisitor):
         return self.visit(ctx.atom)
     
     # -------------Variables-------------- #
-
     def visitSingleVar(self, ctx):
         name = ctx.name.text
         value = self.visit(ctx.exp)
@@ -87,6 +113,7 @@ class Visitor(GrammarVisitor):
             global_memory[name] = value
         else:
             memory.add_value(name, value, self.filename)
+            print(memory.memory)
         return value
     
     def visitMultiVar(self, ctx):

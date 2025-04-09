@@ -1,0 +1,8 @@
+*.sh
+main.twl
+test.twl
+installer/
+dist/
+build/
+.antlr/
+__pycache__/

@@ -4,9 +4,11 @@ options {
     language='Python3';
 }
 
-prog: (statement SEMI | bracket_statement)*;
+prog: ((statement|imp) SEMI | bracket_statement)*;
 
-statement: (VARNAME.)* (expr | var_declaration | var | conditional_statement | imp);
+statement: (expr | var_declaration | var | conditional_statement) # normalStatement
+    | (VARNAME'.')* (expr | var_declaration | var | conditional_statement) # fileStatement
+    ;
 bracket_statement: (conditional_statement | function_def);
 
 imp: 'import' (VARNAME.)* VARNAME;
