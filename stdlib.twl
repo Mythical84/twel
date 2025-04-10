@@ -6,3 +6,15 @@ def append(list, val) {
 def print(text) {
     __python("print('''" + text + "''')");
 }
+
+def int(text) {
+    __python("int('''" + text + "''')");
+}
+
+def str(val) {
+    __python("str('''" + val + "''')");
+}
+
+def input(text) {
+    __python("input('''" + text + "''')");
+}

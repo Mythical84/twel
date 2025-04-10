@@ -74,6 +74,26 @@ class GrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by GrammarParser#elseIf.
+    def visitElseIf(self, ctx:GrammarParser.ElseIfContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#elseElif.
+    def visitElseElif(self, ctx:GrammarParser.ElseElifContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#atomElif.
+    def visitAtomElif(self, ctx:GrammarParser.AtomElifContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#else.
+    def visitElse(self, ctx:GrammarParser.ElseContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by GrammarParser#parenTruth.
     def visitParenTruth(self, ctx:GrammarParser.ParenTruthContext):
         return self.visitChildren(ctx)
@@ -86,6 +106,11 @@ class GrammarVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by GrammarParser#logicTruth.
     def visitLogicTruth(self, ctx:GrammarParser.LogicTruthContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#dualTruth.
+    def visitDualTruth(self, ctx:GrammarParser.DualTruthContext):
         return self.visitChildren(ctx)
 
 
@@ -121,6 +146,11 @@ class GrammarVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by GrammarParser#commaVarlist.
     def visitCommaVarlist(self, ctx:GrammarParser.CommaVarlistContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by GrammarParser#atomBracketStatement.
+    def visitAtomBracketStatement(self, ctx:GrammarParser.AtomBracketStatementContext):
         return self.visitChildren(ctx)
 
 

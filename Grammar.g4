@@ -6,8 +6,8 @@ options {
 
 prog: ((statement|imp) SEMI | bracket_statement)*;
 
-statement: (expr | var_declaration | var | conditional_statement) # normalStatement
-    | (VARNAME'.')* (expr | var_declaration | var | conditional_statement) # fileStatement
+statement: (expr | var_declaration | var) # normalStatement
+    | (VARNAME'.')* (expr | var_declaration | var) # fileStatement
     ;
 bracket_statement: (conditional_statement | function_def);
 
@@ -24,10 +24,19 @@ var: inv='!' name=VARNAME # invertVar
     | name=VARNAME '[' index=NUM ']' # listGet
     ;
 
-conditional_statement: label=('if'|'while') '(' t=truth ')' stmts=brackets;
+conditional_statement: label=('if'|'while') '(' t=truth ')' '{' stmts=brackets '}' (elseif=elif)?;
+
+elif: lhs = elif rhs=elif # elseIf
+    | 'elif' '(' t=truth ')' '{' stmts=brackets '}' # atomElif
+    | else # elseElif
+    ;
+
+else: 'else' '{' stmts=brackets '}';
+
 truth: '(' t=truth ')' # parenTruth
     | lhs=truth logic=('&&'|'||') rhs=truth # logicTruth
-    | lhs=statement operand=('=='|'!=') rhs=statement # atomTruth
+    | lhs=statement operand=('=='|'!='|'<'|'>'|'<='|'>=') rhs=statement # dualTruth
+    | atom=statement # atomTruth
     ;
 
 function_def: ('public'|) 'def' name=VARNAME '(' args=varname_list ')' '{' stmts=brackets '}';
@@ -44,6 +53,7 @@ var_list: lhs=var_list ',' rhs=var_list # commaVarlist
 
 brackets: lhs=brackets rhs=brackets # semiBrackets
     | atom=statement SEMI # atomBrackets
+    | atom=bracket_statement # atomBracketStatement
     ;
 
 expr: '(' exp=expr ')' # parensExpr

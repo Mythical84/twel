@@ -6,8 +6,8 @@ class Memory:
         self.temp_memory = []
 
     def get_value(self, name, filename):
-        if len(self.temp_memory) > 0 and name in self.temp_memory[-1]:
-            return self.temp_memory[-1][name]
+        if len(self.temp_memory) > 0 and name in self.temp_memory[len(self.temp_memory)-1]:
+            return self.temp_memory[len(self.temp_memory)-1][name]
         elif name in global_memory.keys():
             return global_memory[name]
         return self.memory[filename][name]
@@ -19,6 +19,8 @@ class Memory:
         return value in self.memory[filename]
     
     def add_value(self, name, values, filename):
+        if len(self.temp_memory) > 0 and name in self.temp_memory[len(self.temp_memory)-1]: 
+            self.temp_memory[len(self.temp_memory)-1][name] = values
         self.memory[filename][name] = values
 
     def add_temp_memory(self, name, values, filename):

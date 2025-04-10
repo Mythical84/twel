@@ -11,6 +11,7 @@ class Visitor(GrammarVisitor):
     def __init__(self, filename, path):
         self.filename = filename
         self.path = path
+        self.was_true = False
         memory.register_file(filename)
 
     def parse_file(self, path, filename):
@@ -113,7 +114,6 @@ class Visitor(GrammarVisitor):
             global_memory[name] = value
         else:
             memory.add_value(name, value, self.filename)
-            print(memory.memory)
         return value
     
     def visitMultiVar(self, ctx):
@@ -134,7 +134,6 @@ class Visitor(GrammarVisitor):
     
     def visitVarName(self, ctx):
         value = memory.get_value(ctx.name.text, self.filename)
-        if value == None: raise Exception("Variable name not found") 
         return value
     
     def visitInvertVar(self, ctx):
@@ -179,10 +178,27 @@ class Visitor(GrammarVisitor):
         if label == 'if':
             if self.visit(ctx.t):
                 return self.visit(ctx.stmts)
+            elif not ctx.elseif == None:
+                return self.visit(ctx.elseif)
         else:
             while self.visit(ctx.t):
                 self.visit(ctx.stmts) 
             return None
+        
+    def visitElseIf(self, ctx):
+        temp = self.visit(ctx.lhs)
+        if self.was_true:
+            self.was_true = False
+            return temp
+        return self.visit(ctx.rhs)
+    
+    def visitAtomElif(self, ctx):
+        if self.visit(ctx.t):
+            self.was_true = True
+            return self.visit(ctx.stmts)
+    
+    def visitElse(self, ctx):
+        return self.visit(ctx.stmts)
 
     def visitParenTruth(self, ctx):
         return self.visit(ctx.t)
@@ -196,10 +212,19 @@ class Visitor(GrammarVisitor):
             if not left: return False
             return self.visit(ctx.rhs)
 
-    def visitAtomTruth(self, ctx):
+    def visitDualTruth(self, ctx):
         left = self.visit(ctx.lhs)
         right = self.visit(ctx.rhs)
-        return left == right if ctx.operand == '==' else not left == right
+        opr = ctx.operand.text
+        if opr == '==': return left == right
+        elif opr == '!=': return left != right
+        elif opr == '>': return left > right
+        elif opr == '<': return left < right
+        elif opr == '>=': return left >= right
+        elif opr == '<=': return left <= right
+
+    def visitAtomTruth(self, ctx):
+        return self.visit(ctx.atom) == True
 
     # -------------Functions-------------- #
     def visitFunction_call(self, ctx):
@@ -236,4 +261,7 @@ class Visitor(GrammarVisitor):
         return self.visit(ctx.rhs)
     
     def visitAtomBrackets(self, ctx):
+        return self.visit(ctx.atom)
+    
+    def visitAtomBracketStatement(self, ctx):
         return self.visit(ctx.atom)

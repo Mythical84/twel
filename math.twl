@@ -1,0 +1,50 @@
+pi = __python("import math; math.pi");
+e = __python("import math; math.e");
+
+def cos(rad) {
+    __python("import math; math.cos(" + rad + ")");
+}
+
+def sin(rad) {
+    __python("import math; math.sin(" + rad + ")");
+}
+
+def tan(rad) {
+    sin(rad) / cos(rad);
+}
+
+def cot(rad) {
+    cos(rad) / sin(rad);
+}
+
+def sec(rad) {
+    1 / cos(rad);
+}
+
+def csc(rad) {
+    1 / sin(rad);
+}
+
+def asin(rad) {
+    __python("import math; math.asin(" + rad + ")");
+}
+
+def acos(rad) {
+    __python("import math; math.acos(" + rad + ")");
+}
+
+def atan(rad) {
+    __python("import math; math.atan(" + rad + ")");
+}
+
+def log(rad) {
+    __python("import math; math.log(" + rad + ")");
+}
+
+def exp(val, pow) {
+    while (pow != 1) {
+        val = val * val;
+        pow = pow - 1;
+    }
+    val;
+}
