@@ -9,7 +9,7 @@ prog: ((statement|imp) SEMI | bracket_statement)*;
 statement: (expr | var_declaration | var) # normalStatement
     | (VARNAME'.')* (expr | var_declaration | var) # fileStatement
     ;
-bracket_statement: (conditional_statement | function_def);
+bracket_statement: (conditional_statement | function_def | for_loop);
 
 imp: 'import' (VARNAME.)* VARNAME;
 
@@ -23,6 +23,8 @@ var: inv='!' name=VARNAME # invertVar
     | name=VARNAME # varName
     | name=VARNAME '[' index=NUM ']' # listGet
     ;
+
+for_loop: 'for' '(' value=VARNAME 'in' array=statement ')' '{' stmts=brackets '}';
 
 conditional_statement: label=('if'|'while') '(' t=truth ')' '{' stmts=brackets '}' (elseif=elif)?;
 

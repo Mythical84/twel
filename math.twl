@@ -37,8 +37,8 @@ def atan(rad) {
     __python("import math; math.atan(" + rad + ")");
 }
 
-def log(rad) {
-    __python("import math; math.log(" + rad + ")");
+def log(val) {
+    __python("import math; math.log(" + val + ")");
 }
 
 def exp(val, pow) {

@@ -7,13 +7,44 @@
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#integers"
+		},
+		{
+			"include": "#statements"
+		},
+		{
+			"include": "#other"
 		}
 	],
 	"repository": {
+		"other": {
+			"match": "",
+			"name": "keyword.other"
+		},
+		"integers": {
+			"match": "([0-9]+\\.[0-9]+|[0-9]+)",
+			"name": "constant.numeric"
+		},
+		"functions": {
+			"match": "(\\w+)+\\(",
+			"name": "support.function"
+		},
+		"statements": {
+			"match": "\\b(if|elif|else|while|for|def|import|public)\\b",
+			"name": "keyword.control.twel"
+		},
 		"keywords": {
 			"patterns": [{
-				"name": "keyword.control.twel",
-				"match": "\\b(if|while|for|return)\\b"
+				"name": "keyword.other.twel",
+				"match": "\\b(public|true|false|null|in)\\b"
 			}]
 		},
 		"strings": {
@@ -24,6 +55,30 @@
 				{
 					"name": "constant.character.escape.twel",
 					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"begin": "//",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.twel"
+						}
+					},
+					"end": "\\n",
+					"name": "comment.line.number-sign.twel"
+				},
+				{
+					"begin": "\\/\\*",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.twel"
+						}
+					},
+					"end": "\\*\\/",
+					"name": "comment.block.empty.twel"
 				}
 			]
 		}

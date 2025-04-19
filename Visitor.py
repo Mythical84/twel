@@ -12,6 +12,7 @@ class Visitor(GrammarVisitor):
         self.filename = filename
         self.path = path
         self.was_true = False
+        self.return_varname = False
         memory.register_file(filename)
 
     def parse_file(self, path, filename):
@@ -133,6 +134,9 @@ class Visitor(GrammarVisitor):
         memory.add_value(ctx.name.text, values, self.filename)
     
     def visitVarName(self, ctx):
+        if (self.return_varname): 
+            self.return_varname = False
+            return ctx.name.text
         value = memory.get_value(ctx.name.text, self.filename)
         return value
     
@@ -225,6 +229,14 @@ class Visitor(GrammarVisitor):
 
     def visitAtomTruth(self, ctx):
         return self.visit(ctx.atom) == True
+    
+    def visitFor_loop(self, ctx):
+        list = self.visit(ctx.array)
+        for i in range(0, len(list)-1):
+            memory.add_value(ctx.value.text, list[i], self.filename)
+            self.visit(ctx.stmts)
+        memory.add_value(ctx.value.text, list[-1], self.filename)
+        return self.visit(ctx.stmts)
 
     # -------------Functions-------------- #
     def visitFunction_call(self, ctx):
@@ -233,6 +245,9 @@ class Visitor(GrammarVisitor):
             return self.exec_with_return(args[0])
         elif ctx.name.text == '__filename':
             return self.filename
+        elif ctx.name.text == '__varname':
+            self.return_varname = True
+            return self.visit(ctx.args)[0]
         elif ctx.name.text == 'free':
             memory.remove_value(ctx.args[0], self.filename)
             return None

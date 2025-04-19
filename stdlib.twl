@@ -1,6 +1,13 @@
 def append(list, val) {
     name = __filename();
-    varname = __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append('''" + val + "''')");
+    var = __varname(val);
+    __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append('''" + var + "''')");
+}
+
+def len(list) {
+    name = __filename();
+    var = __varname(list);
+    __python("from memory import memory; len(memory.memory['" + name + "']['" + var + "'])");
 }
 
 def print(text) {
@@ -17,4 +24,13 @@ def str(val) {
 
 def input(text) {
     __python("input('''" + text + "''')");
+}
+
+def range(min, max) {
+    temp = [];
+    while(min < max) {
+        append("temp", min);
+        min = min + 1;
+    }
+    temp;
 }

@@ -69,6 +69,11 @@ class GrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by GrammarParser#for_loop.
+    def visitFor_loop(self, ctx:GrammarParser.For_loopContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by GrammarParser#conditional_statement.
     def visitConditional_statement(self, ctx:GrammarParser.Conditional_statementContext):
         return self.visitChildren(ctx)
