@@ -1,13 +1,20 @@
 def append(list, val) {
     name = __filename();
-    var = __varname(val);
-    __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append('''" + var + "''')");
+    if (typeof(val) == "str") {
+        __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append('''" + val + "''')");
+    } else {
+        __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append(" + val + ")");
+    }
+}
+
+def append_var(list, var) {
+    name = __filename();
+    __python("from memory import memory; memory.memory['" + name + "']['" + list + "'].append(memory.memory['" + name + "']['" + var + "'])");
 }
 
 def len(list) {
     name = __filename();
-    var = __varname(list);
-    __python("from memory import memory; len(memory.memory['" + name + "']['" + var + "'])");
+    __python("len(" + list + ")");
 }
 
 def print(text) {
@@ -22,15 +29,23 @@ def str(val) {
     __python("str('''" + val + "''')");
 }
 
+def typeof(var) {
+    __python("t = ''\ntry: t=get_type(" + var + ")\nexcept: t='str'\nt");
+}
+
+def contains(var, val) {
+    name = __filename();
+    __python("from memory import memory; memory.get_value() in " + val);
+}
+
+def charat(var, index) {
+    __python("'" + var + "'[" + index + "]");
+}
+
 def input(text) {
     __python("input('''" + text + "''')");
 }
 
 def range(min, max) {
-    temp = [];
-    while(min < max) {
-        append("temp", min);
-        min = min + 1;
-    }
-    temp;
+    __python("list(range(" + min + ", " + max + "))");
 }

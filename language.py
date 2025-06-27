@@ -21,7 +21,9 @@ def parse_file(path, filename):
 
 stdlib_files = [
     'stdlib.twl',
-    'math.twl'
+    'math.twl',
+    'os.twl',
+    'file.twl'
 ]
 
 for f in stdlib_files:

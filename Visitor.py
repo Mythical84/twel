@@ -7,12 +7,23 @@ import copy
 from memory import global_memory
 from memory import memory
 
+# helper function for stdlib
+def get_type(var):
+    if type(var) is int:
+        return "int"
+    elif type(var) is bool:
+        return "bool"
+    elif type(var) is float:
+        return "float"
+    elif type(var) is list:
+        return "list"
+
 class Visitor(GrammarVisitor):
     def __init__(self, filename, path):
         self.filename = filename
+        self.function_file = filename
         self.path = path
         self.was_true = False
-        self.return_varname = False
         memory.register_file(filename)
 
     def parse_file(self, path, filename):
@@ -35,6 +46,7 @@ class Visitor(GrammarVisitor):
         return result
 
     def exec_with_return(self, code):
+        code = code.encode().decode('unicode_escape')
         code_ast = ast.parse(code)
 
         init_ast = copy.deepcopy(code_ast)
@@ -51,11 +63,11 @@ class Visitor(GrammarVisitor):
     
     # -------------Statement-------------- #
     def visitFileStatement(self, ctx):
-        file='/'.join(ctx.getText().split('.')[:-1])
-        temp = copy.copy(self.filename)
-        self.filename = file
+        file='/'.join(ctx.getText().split('(')[0].split('.')[:-1])
+        temp = copy.copy(self.function_file)
+        self.function_file = file
         r = self.visitChildren(ctx)
-        self.filename = temp
+        self.function_file = temp
         return r
 
     def visitImp(self, ctx):
@@ -67,7 +79,7 @@ class Visitor(GrammarVisitor):
         return int(ctx.atom.text)
     
     def visitBoolExpr(self, ctx):
-        return ctx.atom.text == 'true'
+        return ctx.atom.text == 'True'
     
     def visitStrExpr(self, ctx):
         return ctx.getText()[1:-1]
@@ -99,10 +111,10 @@ class Visitor(GrammarVisitor):
             return left % right
         
     def visitNegExpr(self, ctx):
-        return -self.visit(ctx.children)
+        return -int(ctx.getText())
         
     def visitParensExpr(self, ctx):
-        return self.visit(ctx.children)
+        return self.visit(ctx.exp)
     
     def visitVarExpr(self, ctx):
         return self.visit(ctx.atom)
@@ -134,10 +146,7 @@ class Visitor(GrammarVisitor):
         memory.add_value(ctx.name.text, values, self.filename)
     
     def visitVarName(self, ctx):
-        if (self.return_varname): 
-            self.return_varname = False
-            return ctx.name.text
-        value = memory.get_value(ctx.name.text, self.filename)
+        value = memory.get_value(ctx.name.text, self.function_file)
         return value
     
     def visitInvertVar(self, ctx):
@@ -244,17 +253,14 @@ class Visitor(GrammarVisitor):
         if ctx.name.text == '__python':
             return self.exec_with_return(args[0])
         elif ctx.name.text == '__filename':
-            return self.filename
-        elif ctx.name.text == '__varname':
-            self.return_varname = True
-            return self.visit(ctx.args)[0]
+            return self.function_file
         elif ctx.name.text == 'free':
-            memory.remove_value(ctx.args[0], self.filename)
+            memory.remove_value(args[0], self.filename)
             return None
         else:
-            if memory.value_in(ctx.name.text, self.filename):
-                memory.add_temp_memory(ctx.name.text, args, self.filename)
-                temp = self.visit(memory.get_value(ctx.name.text, self.filename)['stmts'])
+            if memory.value_in(ctx.name.text, self.function_file):
+                memory.add_temp_memory(ctx.name.text, args, self.function_file)
+                temp = self.visit(memory.get_value(ctx.name.text, self.function_file)['stmts'])
                 memory.close_temp_memory()
                 return temp
             else:

@@ -1,0 +1,15 @@
+def time() {
+    __python("import time; time.time()");
+}
+
+def platform() {
+    __python("import platform; platform.system()");
+}
+
+def exit() {
+    __python("import sys; sys.exit()");
+}
+
+def sleep(amount) {
+    __python("import time; time.sleep(" + amount + ")");
+}

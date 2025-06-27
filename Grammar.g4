@@ -73,18 +73,18 @@ expr: '(' exp=expr ')' # parensExpr
 
 // fragments
 SEMI: [;]+;
-NL: [\r\n ]+ -> skip;
+NL: [\r\n ]+ -> channel(HIDDEN);
 
 NUM: [0-9]+;
 FLOAT: [0-9]+ '.' [0-9]+;
-BOOL: ('true'|'false');
+BOOL: ('True'|'False');
 // i have zero clue why this works, i found it on a random stack overflow post
 StringLiteral: UnterminatedStringLiteral ('"');
 UnterminatedStringLiteral: ('"') (~["\\\r\n] | '\\' (. | EOF))* ;
 NULL: 'null';
 
-BlockComment: '/*' .*? '*/' -> skip;
-Comment: '//' .*? -> skip;
+BlockComment: '/*' .*? '*/' -> channel(HIDDEN);
+Comment: '//' .*? -> channel(HIDDEN);
 
 VARNAME: ([a-zA-Z_])([a-zA-Z0-9-_]*);
 
